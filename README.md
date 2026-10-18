@@ -38,7 +38,7 @@ DeepSeek 官方余额接口显示账户余额，配有可置顶的 Windows 悬�
 ### 使用发布包
 
 1. 从 [Releases](https://github.com/ShenMingPro/deepseek-usage-monitor/releases) 下载
-   `deepseek-usage-monitor-1.0.0-win-x64.zip`。
+   `deepseek-usage-monitor-1.0.1-win-x64.zip`。
 2. 解压到固定目录，不要直接在压缩包内运行。
 3. 双击 `Start Monitor.cmd` 或 `DeepSeekLauncher.exe`。
 

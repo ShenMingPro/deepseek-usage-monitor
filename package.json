@@ -1,6 +1,6 @@
 {
   "name": "deepseek-usage-monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A local-first DeepSeek usage monitor for Codex with a floating Windows widget.",
   "license": "MIT",
   "author": "ShenMingPro",

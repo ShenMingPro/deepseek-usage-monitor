@@ -47,7 +47,8 @@ if (Test-Path -LiteralPath $packageRoot) {
 }
 
 Write-Host "Extracting Microsoft WebView2 SDK $version..."
-Expand-Archive -LiteralPath $packageFile -DestinationPath $packageRoot -Force
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($packageFile, $packageRoot)
 
 if (-not (Test-Path -LiteralPath $coreDll)) {
   throw "WebView2 SDK extraction did not produce the expected files."

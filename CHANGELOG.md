@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - 2026-10-18
+
+- 修复全新克隆环境中使用 Windows PowerShell 5.1 恢复 WebView2 SDK 时的 `.nupkg` 解压失败
+- 通过 Windows GitHub Actions 验证完整构建流程
+
 ## 1.0.0 - 2026-10-18
 
 初始开源版本。
