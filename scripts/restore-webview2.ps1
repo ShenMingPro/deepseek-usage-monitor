@@ -29,7 +29,15 @@ if (-not (Test-Path -LiteralPath $packageFile)) {
   }
 }
 
-$actualSha256 = (Get-FileHash -LiteralPath $packageFile -Algorithm SHA256).Hash
+$sha256 = [System.Security.Cryptography.SHA256]::Create()
+$packageStream = [System.IO.File]::OpenRead($packageFile)
+try {
+  $hashBytes = $sha256.ComputeHash($packageStream)
+  $actualSha256 = [System.BitConverter]::ToString($hashBytes).Replace("-", "")
+} finally {
+  $packageStream.Dispose()
+  $sha256.Dispose()
+}
 if ($actualSha256 -ne $expectedSha256) {
   throw "WebView2 SDK checksum mismatch. Expected $expectedSha256, got $actualSha256."
 }
