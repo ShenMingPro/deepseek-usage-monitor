@@ -11,6 +11,14 @@ DeepSeek 官方余额接口显示账户余额，配有可置顶的 Windows 悬�
 
 > 本项目是独立第三方工具，与 DeepSeek、OpenAI 或 Microsoft 没有隶属或背书关系。
 
+## 演示视频
+
+[![观看 78 秒完整演示](docs/demo-preview.jpg)](https://github.com/ShenMingPro/deepseek-usage-monitor/releases/download/v1.0.1/deepseek-usage-monitor-demo.mp4)
+
+▶ [观看 78 秒完整演示](https://github.com/ShenMingPro/deepseek-usage-monitor/releases/download/v1.0.1/deepseek-usage-monitor-demo.mp4)
+
+视频从真实桌面启动器开始，依次展示悬浮窗指标、收起与展开、计费与连接设置、完整仪表盘、请求明细和会话完成动画。录制使用本地真实运行数据，侧栏会话 ID 已替换为 `demo-session`。
+
 ## 功能
 
 - 今日 Tokens、调用次数、余额和今日消费总览
@@ -199,7 +207,7 @@ deepseek-usage-monitor/
 ├─ .github/workflows/ci.yml       # Windows CI
 ├─ assets/                         # 夜空背景和启动器图标
 ├─ desktop/                        # WebView2 无边框窗口宿主
-├─ docs/                           # README 截图
+├─ docs/                           # README 截图与演示封面
 ├─ launcher/                       # 桌面启动器源码
 ├─ scripts/                        # 恢复、构建、验证和打包脚本
 ├─ tray/                           # Windows 托盘源码
