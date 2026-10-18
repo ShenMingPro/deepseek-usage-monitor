@@ -1,0 +1,28 @@
+# Runtime data and local build outputs
+logs/
+artifacts/
+release/
+node_modules/
+vendor/
+
+# Compiled desktop binaries
+*.exe
+*.pdb
+*.dll
+
+# Editor and OS files
+.vs/
+.vscode/
+.idea/
+bin/
+obj/
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local secrets and temporary files
+.env
+.env.*
+*.log
+*.tmp
+

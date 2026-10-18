@@ -1,0 +1,40 @@
+{
+  "name": "deepseek-usage-monitor",
+  "version": "1.0.0",
+  "description": "A local-first DeepSeek usage monitor for Codex with a floating Windows widget.",
+  "license": "MIT",
+  "author": "ShenMingPro",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShenMingPro/deepseek-usage-monitor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ShenMingPro/deepseek-usage-monitor/issues"
+  },
+  "homepage": "https://github.com/ShenMingPro/deepseek-usage-monitor#readme",
+  "keywords": [
+    "deepseek",
+    "codex",
+    "usage-monitor",
+    "token-usage",
+    "windows",
+    "webview2"
+  ],
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "widget": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\open-dashboard.ps1",
+    "restore:webview2": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\restore-webview2.ps1",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-all.ps1",
+    "build:all": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-all.ps1",
+    "build:tray": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\build-tray.ps1",
+    "build:host": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\build-widget-host.ps1",
+    "build:launcher": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\build-launcher.ps1",
+    "install:desktop": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\install-desktop-shortcut.ps1",
+    "test": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\verify.ps1",
+    "package": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\package-release.ps1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

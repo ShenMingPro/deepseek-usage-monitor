@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="DeepSeek 模型用量监控面板，展示余额、会话消耗、上下文占用、输入输出 Token 与缓存命中率。"
+    />
+    <title>DeepSeek Usage Monitor</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script src="/widget-mode.js"></script>
+    <link rel="stylesheet" href="/styles.css?v=27" />
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="icon-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+      </symbol>
+      <symbol id="icon-list" viewBox="0 0 24 24">
+        <path d="M8 6h13M8 12h13M8 18h13"></path>
+        <circle cx="4" cy="6" r="1"></circle>
+        <circle cx="4" cy="12" r="1"></circle>
+        <circle cx="4" cy="18" r="1"></circle>
+      </symbol>
+      <symbol id="icon-sliders" viewBox="0 0 24 24">
+        <path d="M4 6h7M15 6h5M4 12h3M11 12h9M4 18h10M18 18h2"></path>
+        <circle cx="13" cy="6" r="2"></circle>
+        <circle cx="9" cy="12" r="2"></circle>
+        <circle cx="16" cy="18" r="2"></circle>
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 11v5M12 8h.01"></path>
+      </symbol>
+      <symbol id="icon-wallet" viewBox="0 0 24 24">
+        <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H19a1 1 0 0 1 1 1v13H6.5A2.5 2.5 0 0 1 4 16.5z"></path>
+        <path d="M4 8h14M15 12h6v4h-6a2 2 0 0 1 0-4z"></path>
+      </symbol>
+      <symbol id="icon-coins" viewBox="0 0 24 24">
+        <ellipse cx="9" cy="6" rx="5" ry="2.5"></ellipse>
+        <path d="M4 6v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V6M4 10v4c0 1.4 2.2 2.5 5 2.5 1.1 0 2.2-.2 3-.6"></path>
+        <ellipse cx="16" cy="14" rx="5" ry="2.5"></ellipse>
+        <path d="M11 14v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-4"></path>
+      </symbol>
+      <symbol id="icon-gauge" viewBox="0 0 24 24">
+        <path d="M4.2 17a9 9 0 1 1 15.6 0"></path>
+        <path d="m12 13 4-4M7 17h10"></path>
+        <circle cx="12" cy="13" r="1.5"></circle>
+      </symbol>
+      <symbol id="icon-login" viewBox="0 0 24 24">
+        <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 8l4 4-4 4M14 12H4"></path>
+      </symbol>
+      <symbol id="icon-logout" viewBox="0 0 24 24">
+        <path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M14 8l4 4-4 4M18 12H8"></path>
+      </symbol>
+      <symbol id="icon-database" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path>
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M20 11a8 8 0 0 0-14.9-4L3 10M3 4v6h6M4 13a8 8 0 0 0 14.9 4L21 14M21 20v-6h-6"></path>
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 9 9 0 1 0 20.5 15.2z"></path>
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18"></path>
+      </symbol>
+      <symbol id="icon-key" viewBox="0 0 24 24">
+        <circle cx="8" cy="15" r="4"></circle>
+        <path d="m11 12 8-8M16 4h4v4M14 7l3 3"></path>
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6"></path>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="M12 4 3 20h18zM12 9v5M12 17h.01"></path>
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 4v11M8 11l4 4 4-4M5 20h14"></path>
+      </symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <path d="M5 12h14M14 7l5 5-5 5"></path>
+      </symbol>
+      <symbol id="icon-chevron-up" viewBox="0 0 24 24">
+        <path d="m6 15 6-6 6 6"></path>
+      </symbol>
+      <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+        <path d="m6 9 6 6 6-6"></path>
+      </symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 7v5l3 2"></path>
+      </symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24">
+        <path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path>
+        <path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"></path>
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 5 6v5c0 4.6 2.9 8 7 10 4.1-2 7-5.4 7-10V6z"></path>
+        <path d="m9 12 2 2 4-4"></path>
+      </symbol>
+      <symbol id="icon-bolt" viewBox="0 0 24 24">
+        <path d="m13 2-8 12h7l-1 8 8-12h-7z"></path>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+        <path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path>
+      </symbol>
+      <symbol id="icon-external" viewBox="0 0 24 24">
+        <path d="M14 4h6v6M20 4l-9 9"></path>
+        <path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"></path>
+      </symbol>
+    </svg>
+
+    <div class="app-shell">
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <aside class="sidebar" id="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+          <div class="brand-copy">
+            <strong>DeepSeek</strong>
+            <span>Usage Monitor</span>
+          </div>
+          <button class="icon-btn mobile-only sidebar-close" id="sidebarClose" type="button" aria-label="关闭导航">
+            <svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+          </button>
+        </div>
+
+        <nav class="nav">
+          <p class="nav-label">监控</p>
+          <button class="nav-item is-active" type="button" data-view="overview">
+            <svg class="icon" aria-hidden="true"><use href="#icon-grid"></use></svg>
+            <span>总览</span>
+          </button>
+          <button class="nav-item" type="button" data-view="requests">
+            <svg class="icon" aria-hidden="true"><use href="#icon-list"></use></svg>
+            <span>请求明细</span>
+            <span class="nav-count" id="navRequestCount">--</span>
+          </button>
+
+          <p class="nav-label nav-label-spaced">配置</p>
+          <button class="nav-item" type="button" data-view="pricing">
+            <svg class="icon" aria-hidden="true"><use href="#icon-sliders"></use></svg>
+            <span>计费与连接</span>
+          </button>
+          <button class="nav-item" type="button" data-view="about">
+            <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+            <span>数据说明</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-session">
+          <div class="sidebar-session-head">
+            <span class="live-dot"></span>
+            <span>正在监控</span>
+          </div>
+          <strong>当前 Codex 会话</strong>
+          <p id="sidebarSessionId">等待同步…</p>
+          <div class="session-rail">
+            <span id="sidebarContextFill"></span>
+          </div>
+          <small id="sidebarContextLabel">上下文 --</small>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="avatar" aria-hidden="true">DS</div>
+          <div>
+            <strong>本地工作区</strong>
+            <span>127.0.0.1 · 安全连接</span>
+          </div>
+          <span class="connection-dot" title="本地服务正常"></span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="icon-btn mobile-only" id="menuBtn" type="button" aria-label="打开导航">
+              <svg class="icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+            </button>
+            <div class="breadcrumb">
+              <span>监控中心</span>
+              <i>/</i>
+              <strong id="pageBreadcrumb">实时总览</strong>
+            </div>
+          </div>
+
+          <div class="topbar-actions">
+            <div class="sync-status" id="syncStatus" aria-live="polite">
+              <span class="live-dot"></span>
+              <span>已同步</span>
+              <time id="lastSync">刚刚</time>
+            </div>
+            <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深浅主题">
+              <svg class="icon theme-icon-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="icon theme-icon-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+            <button class="btn btn-secondary btn-refresh" id="refreshBtn" type="button" aria-label="刷新用量数据">
+              <svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>
+              <span>刷新</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="page">
+          <section class="view is-active" id="view-overview" aria-labelledby="overviewTitle">
+            <div class="page-heading">
+              <div>
+                <div class="eyebrow"><span></span> DEEPSEEK · LIVE USAGE</div>
+                <h1 id="overviewTitle">模型用量总览</h1>
+                <p>实时追踪当前 Codex 会话的账户余额、Token 消耗与上下文效率。</p>
+              </div>
+              <div class="heading-meta">
+                <div class="model-chip" id="modelChip">
+                  <span class="model-logo">D</span>
+                  <span>
+                    <strong id="modelName">DeepSeek</strong>
+                    <small id="modelVersion">正在读取模型…</small>
+                  </span>
+                </div>
+                <button class="btn btn-secondary compact" id="openConnectBtn" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-key"></use></svg>
+                  <span>连接账户</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="loading-state" id="loadingState" aria-live="polite">
+              <div class="loading-orbit" aria-hidden="true"><span></span></div>
+              <strong>正在读取本次会话</strong>
+              <p>同步 Codex Token 记录与 DeepSeek 账户余额…</p>
+            </div>
+
+            <div class="error-state" id="errorState" hidden role="alert">
+              <div class="error-icon">
+                <svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg>
+              </div>
+              <div>
+                <strong>暂时无法读取用量数据</strong>
+                <p id="errorMessage">请确认本地服务正在运行。</p>
+              </div>
+              <button class="btn btn-secondary" id="errorRetryBtn" type="button">重新加载</button>
+            </div>
+
+            <div id="dashboardMain" hidden>
+              <article class="daily-hero" id="dailyHero">
+                <div class="hero-photo" aria-hidden="true"></div>
+                <canvas class="starfield" id="starfield" aria-hidden="true"></canvas>
+                <div class="hero-nebula" aria-hidden="true"></div>
+                <div class="hero-content" id="heroDailyView">
+                  <div class="hero-topline">
+                    <div class="hero-topline-left">
+                      <div
+                        class="hero-context-badge"
+                        id="heroContextBadge"
+                        data-tooltip="当前上下文占模型窗口的比例"
+                        aria-live="polite"
+                      >
+                        <span class="hero-context-icon">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg>
+                        </span>
+                        <span class="hero-context-copy">
+                          <small>上下文窗口</small>
+                          <span>
+                            <strong class="num" id="heroContextPercent">--%</strong>
+                          </span>
+                        </span>
+                        <span class="hero-status-dot" aria-hidden="true"></span>
+                      </div>
+                      <div
+                        class="hero-speed-badge"
+                        id="heroSpeedBadge"
+                        data-tooltip="最近一次模型调用完成后的输出 Token 生成速度"
+                        aria-live="polite"
+                      >
+                        <span class="hero-speed-icon">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-bolt"></use></svg>
+                        </span>
+                        <span class="hero-speed-copy">
+                          <small>输出速度</small>
+                          <span>
+                            <strong class="num" id="heroSpeedValue">--</strong>
+                            <em>tok/s</em>
+                          </span>
+                        </span>
+                        <span class="hero-status-dot" aria-hidden="true"></span>
+                      </div>
+                      <div
+                        class="hero-stat-badge"
+                        id="heroFirstTokenBadge"
+                        data-tooltip="首字延迟：每次 API 调用从请求开始到收到首个模型输出事件的时间"
+                      >
+                        <span class="hero-stat-icon">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
+                        </span>
+                        <span class="hero-stat-copy">
+                          <small class="hero-stat-label">首字延迟</small>
+                          <strong class="num" id="heroFirstToken">--</strong>
+                        </span>
+                        <span class="hero-status-dot" aria-hidden="true"></span>
+                      </div>
+                      <div
+                        class="hero-stat-badge"
+                        id="heroDurationBadge"
+                        data-tooltip="耗时：每次 API 调用从请求开始到调用完成的时间"
+                      >
+                        <span class="hero-stat-icon">
+                          <svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg>
+                        </span>
+                        <span class="hero-stat-copy">
+                          <small class="hero-stat-label">调用耗时</small>
+                          <strong class="num" id="heroTurnDuration">--</strong>
+                        </span>
+                        <span class="hero-status-dot" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                    <span class="hero-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  </div>
+
+                  <div class="hero-token-center" id="heroTokenCenter">
+                    <div class="hero-heading">
+                      <time id="dailyDate">2026.10.17</time>
+                      <span aria-hidden="true"></span>
+                      <strong>消耗 Tokens</strong>
+                    </div>
+
+                    <div class="hero-token-value">
+                      <strong class="num flip-number" id="dailyTokens" aria-label="今日消耗 Tokens 0">0</strong>
+                      <span>tokens</span>
+                      <span class="token-delta-badge" id="tokenDeltaBadge" aria-live="polite" hidden></span>
+                    </div>
+                  </div>
+
+                  <div class="hero-bottom">
+                    <div class="hero-provider">
+                      <span>模型厂商</span>
+                      <strong>DeepSeek 平台</strong>
+                      <small id="dailyModels">正在同步模型…</small>
+                    </div>
+
+                    <div class="hero-clock">
+                      <span class="hero-sync-pulse"></span>
+                      <time id="dailyClock">00:00:00</time>
+                      <small id="dailyCalls">今日 -- 次调用</small>
+                    </div>
+                  </div>
+
+                  <div class="hero-account-row">
+                    <div class="hero-balance">
+                      <span>账户余额</span>
+                      <strong class="num">
+                        <span class="hero-currency" id="dailyBalanceCurrency">¥</span><span id="dailyBalanceValue">--</span>
+                      </strong>
+                      <span class="balance-delta-badge" id="balanceDeltaBadge" aria-live="polite" hidden></span>
+                      <small id="dailyBalanceHint">正在同步余额</small>
+                    </div>
+
+                    <div class="hero-spend">
+                      <span>今日消费</span>
+                      <strong class="num" id="dailyCost">¥--</strong>
+                      <small>按官方单价估算</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hero-collision-flash" id="heroCollisionFlash" aria-hidden="true"></div>
+
+                <div
+                  class="hero-completion-view"
+                  id="heroCompletionView"
+                  aria-live="polite"
+                  aria-hidden="true"
+                >
+                  <div class="hero-topline">
+                    <span class="hero-live-badge is-question"><i></i>QUESTION COMPLETE</span>
+                    <span class="hero-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  </div>
+
+                  <div class="hero-completion-heading">
+                    <span id="heroCompletionQuestion">第 1 次提问</span>
+                    <i aria-hidden="true"></i>
+                    <strong>本次问题消耗 Tokens</strong>
+                  </div>
+
+                  <div class="hero-completion-value">
+                    <strong class="num" id="heroCompletionTokens">0</strong>
+                    <span>tokens</span>
+                  </div>
+
+                  <p class="hero-completion-meta" id="heroCompletionMeta">
+                    deepseek-flash · 0 次调用 · 缓存命中 0%
+                  </p>
+
+                  <div class="hero-completion-footer">
+                    <div>
+                      <span>输入</span>
+                      <strong class="num" id="heroCompletionInput">0</strong>
+                    </div>
+                    <div>
+                      <span>输出</span>
+                      <strong class="num" id="heroCompletionOutput">0</strong>
+                    </div>
+                    <div>
+                      <span>缓存命中率</span>
+                      <strong class="num cache-highlight" id="heroCompletionCache">0%</strong>
+                    </div>
+                    <div class="align-end">
+                      <span>本次费用</span>
+                      <strong class="num" id="heroCompletionCost">¥0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hero-tooltip" id="heroTooltip" role="tooltip" hidden></div>
+
+                <button
+                  class="widget-settings-trigger"
+                  id="widgetSettingsBtn"
+                  type="button"
+                  aria-label="打开窗口设置"
+                  hidden
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#icon-sliders"></use></svg>
+                </button>
+                <button
+                  class="widget-collapse-trigger"
+                  id="widgetCollapseBtn"
+                  type="button"
+                  aria-label="收起监控窗口"
+                  hidden
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#icon-chevron-up"></use></svg>
+                </button>
+                <button
+                  class="widget-expand-trigger"
+                  id="widgetExpandBtn"
+                  type="button"
+                  aria-label="展开监控窗口"
+                  hidden
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#icon-chevron-down"></use></svg>
+                </button>
+                <div
+                  class="widget-drag-handle"
+                  id="widgetDragHandle"
+                  aria-label="拖动窗口"
+                ></div>
+              </article>
+
+              <div class="metric-grid">
+                <article class="metric-card metric-balance">
+                  <div class="balance-orb balance-orb-one"></div>
+                  <div class="balance-orb balance-orb-two"></div>
+                  <div class="metric-top">
+                    <span class="metric-icon on-dark">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg>
+                    </span>
+                    <span class="status-chip on-dark" id="balanceStatus">查询余额</span>
+                  </div>
+                  <p class="metric-label">当前余额</p>
+                  <div class="metric-value on-dark">
+                    <span class="currency" id="balanceCurrency">¥</span>
+                    <span class="num" id="balanceValue">--</span>
+                  </div>
+                  <div class="metric-detail on-dark" id="balanceDetail">正在连接 DeepSeek…</div>
+                  <div class="balance-foot">
+                    <span><i class="mini-dot"></i> 官方余额接口</span>
+                    <button type="button" id="refreshBalanceBtn">刷新</button>
+                  </div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-top">
+                    <span class="metric-icon icon-brand">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-coins"></use></svg>
+                    </span>
+                    <span class="metric-chip" id="spendRateChip">空闲时段</span>
+                  </div>
+                  <p class="metric-label">本次对话消耗</p>
+                  <div class="metric-value">
+                    <span class="currency">¥</span>
+                    <span class="num" id="spendValue">--</span>
+                  </div>
+                  <div class="metric-detail" id="spendDetail">按官方 Token 单价估算</div>
+                  <svg class="sparkline" id="spendSpark" aria-hidden="true"></svg>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-top">
+                    <span class="metric-icon icon-teal">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg>
+                    </span>
+                    <span class="metric-chip metric-chip-neutral" id="contextChip">实时</span>
+                  </div>
+                  <p class="metric-label">上下文占用率</p>
+                  <div class="metric-value">
+                    <span class="num" id="contextValue">--</span>
+                    <span class="unit">%</span>
+                  </div>
+                  <div class="metric-detail" id="contextDetail">0 / 1M tokens</div>
+                  <div class="mini-progress" aria-hidden="true">
+                    <span class="mini-progress-fill" id="contextMiniFill"></span>
+                  </div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-top">
+                    <span class="metric-icon icon-violet">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-login"></use></svg>
+                    </span>
+                    <span class="metric-chip metric-chip-neutral">本次对话</span>
+                  </div>
+                  <p class="metric-label">输入 Token</p>
+                  <div class="metric-value">
+                    <span class="num" id="inputValue">--</span>
+                  </div>
+                  <div class="metric-detail" id="inputDetail">缓存命中 --</div>
+                  <svg class="sparkline" id="inputSpark" aria-hidden="true"></svg>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-top">
+                    <span class="metric-icon icon-amber">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-logout"></use></svg>
+                    </span>
+                    <span class="metric-chip metric-chip-neutral">本次对话</span>
+                  </div>
+                  <p class="metric-label">输出 Token</p>
+                  <div class="metric-value">
+                    <span class="num" id="outputValue">--</span>
+                  </div>
+                  <div class="metric-detail" id="outputDetail">推理 Token --</div>
+                  <svg class="sparkline" id="outputSpark" aria-hidden="true"></svg>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-top">
+                    <span class="metric-icon icon-green">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-bolt"></use></svg>
+                    </span>
+                    <span class="metric-chip metric-chip-positive" id="cacheChip">命中良好</span>
+                  </div>
+                  <p class="metric-label">缓存命中率</p>
+                  <div class="metric-value">
+                    <span class="num" id="cacheValue">--</span>
+                    <span class="unit">%</span>
+                  </div>
+                  <div class="metric-detail" id="cacheDetail">已节省 --</div>
+                  <div class="mini-progress green" aria-hidden="true">
+                    <span class="mini-progress-fill" id="cacheMiniFill"></span>
+                  </div>
+                </article>
+              </div>
+
+              <div class="analytics-grid">
+                <article class="panel chart-panel">
+                  <div class="panel-head">
+                    <div>
+                      <h2>用量趋势</h2>
+                      <p id="chartSubtitle">每一次模型调用的上下文与输出变化</p>
+                    </div>
+                    <div class="segmented" role="group" aria-label="趋势展示方式">
+                      <button class="is-active" type="button" data-chart-mode="requests">按次</button>
+                      <button type="button" data-chart-mode="cumulative">累计</button>
+                    </div>
+                  </div>
+                  <div class="chart-legend" aria-hidden="true">
+                    <span><i class="legend-line input"></i>输入 Token</span>
+                    <span><i class="legend-line output"></i>输出 Token</span>
+                    <span class="chart-period" id="chartPeriod">--</span>
+                  </div>
+                  <div class="chart-shell">
+                    <svg
+                      id="trendChart"
+                      class="trend-chart"
+                      role="img"
+                      aria-labelledby="trendChartTitle trendChartDesc"
+                    >
+                      <title id="trendChartTitle">本次对话 Token 用量趋势</title>
+                      <desc id="trendChartDesc">按模型调用展示输入 Token 与输出 Token。</desc>
+                    </svg>
+                    <div class="chart-tooltip" id="trendTooltip" role="tooltip" hidden></div>
+                  </div>
+                </article>
+
+                <article class="panel context-panel">
+                  <div class="panel-head">
+                    <div>
+                      <h2>上下文窗口</h2>
+                      <p>最近一次调用后的上下文构成</p>
+                    </div>
+                    <span class="status-chip status-chip-live"><i></i>实时</span>
+                  </div>
+
+                  <div class="donut-wrap">
+                    <svg class="donut" viewBox="0 0 180 180" role="img" aria-labelledby="donutTitle">
+                      <title id="donutTitle">当前上下文占模型窗口的比例</title>
+                      <circle class="donut-track" cx="90" cy="90" r="67"></circle>
+                      <circle class="donut-segment donut-cached" id="donutCached" cx="90" cy="90" r="67"></circle>
+                      <circle class="donut-segment donut-uncached" id="donutUncached" cx="90" cy="90" r="67"></circle>
+                      <circle class="donut-segment donut-output" id="donutOutput" cx="90" cy="90" r="67"></circle>
+                    </svg>
+                    <div class="donut-center">
+                      <span class="donut-kicker">已占用</span>
+                      <strong class="num" id="donutValue">--%</strong>
+                      <span id="donutTokens">-- tokens</span>
+                    </div>
+                  </div>
+
+                  <div class="context-breakdown">
+                    <div class="breakdown-row">
+                      <span><i class="swatch cached"></i>缓存命中输入</span>
+                      <strong class="num" id="contextCached">--</strong>
+                    </div>
+                    <div class="breakdown-row">
+                      <span><i class="swatch uncached"></i>未命中输入</span>
+                      <strong class="num" id="contextUncached">--</strong>
+                    </div>
+                    <div class="breakdown-row">
+                      <span><i class="swatch output"></i>模型输出</span>
+                      <strong class="num" id="contextOutput">--</strong>
+                    </div>
+                    <div class="breakdown-row remainder">
+                      <span><i class="swatch remainder"></i>剩余窗口</span>
+                      <strong class="num" id="contextRemaining">--</strong>
+                    </div>
+                  </div>
+
+                  <div class="context-callout">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
+                    <span id="contextCallout">等待会话数据</span>
+                  </div>
+                </article>
+              </div>
+
+              <div class="analytics-grid lower-grid">
+                <article class="panel requests-panel">
+                  <div class="panel-head">
+                    <div>
+                      <h2>本次对话请求</h2>
+                      <p>最近模型调用的 Token 与费用明细</p>
+                    </div>
+                    <button class="text-btn" type="button" data-goto-view="requests">
+                      查看全部
+                      <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+                    </button>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>时间</th>
+                          <th>输入</th>
+                          <th>输出</th>
+                          <th>缓存命中</th>
+                          <th>费用</th>
+                          <th>计价</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recentRows">
+                        <tr class="table-placeholder"><td colspan="6">正在读取请求记录…</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </article>
+
+                <article class="panel cost-panel">
+                  <div class="panel-head">
+                    <div>
+                      <h2>费用构成</h2>
+                      <p>本次对话按 Token 类型拆分</p>
+                    </div>
+                    <span class="metric-chip metric-chip-neutral" id="pricingModeChip">自动计价</span>
+                  </div>
+
+                  <div class="cost-total">
+                    <span>本次估算总费用</span>
+                    <strong class="num" id="costTotal">¥--</strong>
+                  </div>
+
+                  <div class="cost-bars" id="costBars">
+                    <div class="cost-bar-skeleton"></div>
+                    <div class="cost-bar-skeleton"></div>
+                    <div class="cost-bar-skeleton"></div>
+                  </div>
+
+                  <div class="savings-note">
+                    <div class="savings-icon">
+                      <svg class="icon" aria-hidden="true"><use href="#icon-bolt"></use></svg>
+                    </div>
+                    <div>
+                      <span>缓存节省估算</span>
+                      <strong class="num" id="cacheSavings">¥--</strong>
+                    </div>
+                    <span class="savings-context" id="savingsContext">--</span>
+                  </div>
+
+                  <div class="rate-footnote">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg>
+                    <span id="priceFootnote">按 DeepSeek 官方人民币单价计算</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="view" id="view-requests" aria-labelledby="requestsTitle" hidden>
+            <div class="page-heading compact-heading">
+              <div>
+                <div class="eyebrow"><span></span> REQUEST LEDGER</div>
+                <h1 id="requestsTitle">请求明细</h1>
+                <p>逐次查看上下文输入、输出 Token、缓存效率与估算费用。</p>
+              </div>
+              <button class="btn btn-secondary" id="exportBtn" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg>
+                导出 CSV
+              </button>
+            </div>
+
+            <div class="request-toolbar">
+              <div class="segmented" role="group" aria-label="请求计价筛选">
+                <button class="is-active" type="button" data-request-filter="all">全部请求</button>
+                <button type="button" data-request-filter="offPeak">空闲计价</button>
+                <button type="button" data-request-filter="peak">高峰计价</button>
+              </div>
+              <span class="toolbar-note" id="requestSummary">-- 次模型调用</span>
+            </div>
+
+            <article class="panel request-ledger">
+              <div class="table-wrap">
+                <table class="data-table full-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>调用时间</th>
+                      <th>模型</th>
+                      <th>输入 Token</th>
+                      <th>缓存 / 未命中</th>
+                      <th>输出 Token</th>
+                      <th>上下文</th>
+                      <th>命中率</th>
+                      <th>估算费用</th>
+                      <th>计价</th>
+                    </tr>
+                  </thead>
+                  <tbody id="requestRows">
+                    <tr class="table-placeholder"><td colspan="10">正在读取请求记录…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+
+          <section class="view" id="view-pricing" aria-labelledby="pricingTitle" hidden>
+            <div class="page-heading compact-heading">
+              <div>
+                <div class="eyebrow"><span></span> BILLING &amp; CONNECTION</div>
+                <h1 id="pricingTitle">计费与连接</h1>
+                <p>管理余额数据源、刷新节奏与官方价格口径。</p>
+              </div>
+              <span class="connection-badge" id="connectionBadge"><i></i>检查连接中</span>
+            </div>
+
+            <div class="settings-grid">
+              <article class="panel settings-card">
+                <div class="settings-head">
+                  <span class="settings-icon">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-key"></use></svg>
+                  </span>
+                  <div>
+                    <h2>DeepSeek 余额连接</h2>
+                    <p id="keySourceText">正在检查本机凭证…</p>
+                  </div>
+                </div>
+
+                <div class="connection-summary" id="connectionSummary">
+                  <span class="connection-summary-dot"></span>
+                  <div>
+                    <strong>准备连接</strong>
+                    <p>凭证仅在本地 Node 服务中读取，不会写入浏览器。</p>
+                  </div>
+                </div>
+
+                <form id="connectForm" class="connect-form">
+                  <label for="apiKeyInput">替换 API Key</label>
+                  <div class="input-row">
+                    <div class="password-field">
+                      <input
+                        id="apiKeyInput"
+                        name="apiKey"
+                        type="password"
+                        placeholder="sk-..."
+                        autocomplete="off"
+                        spellcheck="false"
+                      />
+                      <button class="show-key" id="showKeyBtn" type="button" aria-label="显示或隐藏 API Key">显示</button>
+                    </div>
+                    <button class="btn btn-primary" type="submit" id="connectBtn">验证并连接</button>
+                  </div>
+                  <p class="field-help">只在当前服务进程内保存；服务重启后会恢复为本机 Codex 配置。</p>
+                </form>
+
+                <div class="settings-actions">
+                  <button class="text-btn" id="verifyBalanceBtn" type="button">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>
+                    重新验证余额
+                  </button>
+                  <button class="text-btn danger" id="disconnectBtn" type="button">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-logout"></use></svg>
+                    清除本次自定义密钥
+                  </button>
+                </div>
+              </article>
+
+              <article class="panel settings-card">
+                <div class="settings-head">
+                  <span class="settings-icon warm">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-sliders"></use></svg>
+                  </span>
+                  <div>
+                    <h2>监控偏好</h2>
+                    <p>调整刷新频率和计价时段。</p>
+                  </div>
+                </div>
+
+                <div class="setting-block">
+                  <div class="setting-label">
+                    <strong>自动刷新</strong>
+                    <span>会话产生新调用时自动更新。</span>
+                  </div>
+                  <select id="refreshSelect" class="select-control">
+                    <option value="0">关闭</option>
+                    <option value="5">每 5 秒</option>
+                    <option value="10">每 10 秒</option>
+                    <option value="15" selected>每 15 秒</option>
+                    <option value="30">每 30 秒</option>
+                    <option value="60">每 1 分钟</option>
+                  </select>
+                </div>
+
+                <div class="setting-block stacked">
+                  <div class="setting-label">
+                    <strong>计价时段</strong>
+                    <span>费用按每次调用发生时间匹配官方价格。</span>
+                  </div>
+                  <div class="segmented full" role="group" aria-label="计价时段">
+                    <button class="is-active" type="button" data-price-mode="auto">自动</button>
+                    <button type="button" data-price-mode="offPeak">空闲价</button>
+                    <button type="button" data-price-mode="peak">高峰价</button>
+                  </div>
+                </div>
+
+                <div class="settings-note">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+                  <p>自动模式按北京时间工作日 09:00–12:00、14:00–18:00 识别高峰价，暂未处理法定节假日。</p>
+                </div>
+
+                <button class="text-btn preview-completion-btn" id="previewCompletionBtn" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
+                  预览会话结束动画
+                </button>
+              </article>
+            </div>
+
+            <div class="price-section-head">
+              <div>
+                <h2>DeepSeek 官方单价</h2>
+                <p>人民币 / 每百万 tokens，自动模式会按调用时段切换。</p>
+              </div>
+              <a
+                class="text-link"
+                href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                查看官方价格
+                <svg class="icon" aria-hidden="true"><use href="#icon-external"></use></svg>
+              </a>
+            </div>
+
+            <div class="price-cards" id="priceCards">
+              <article class="price-card skeleton-card"></article>
+              <article class="price-card skeleton-card"></article>
+            </div>
+
+            <article class="panel formula-card">
+              <div class="formula-icon">
+                <svg class="icon" aria-hidden="true"><use href="#icon-coins"></use></svg>
+              </div>
+              <div>
+                <h2>费用如何计算</h2>
+                <p>
+                  单次费用 = 缓存命中输入 × 命中单价 + 未命中输入 × 未命中单价 + 输出 Token × 输出单价。
+                  费用只用于本地估算，实际扣费以 DeepSeek 账单为准。
+                </p>
+              </div>
+              <a
+                class="btn btn-secondary"
+                href="https://api-docs.deepseek.com/zh-cn/quick_start/token_usage"
+                target="_blank"
+                rel="noreferrer"
+              >
+                计费说明
+                <svg class="icon" aria-hidden="true"><use href="#icon-external"></use></svg>
+              </a>
+            </article>
+          </section>
+
+          <section class="view" id="view-about" aria-labelledby="aboutTitle" hidden>
+            <div class="page-heading compact-heading">
+              <div>
+                <div class="eyebrow"><span></span> DATA &amp; PRIVACY</div>
+                <h1 id="aboutTitle">数据说明</h1>
+                <p>了解面板的数据来源、计算口径与本地隐私边界。</p>
+              </div>
+            </div>
+
+            <div class="about-grid">
+              <article class="panel about-card">
+                <span class="about-number">01</span>
+                <span class="settings-icon">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-database"></use></svg>
+                </span>
+                <h2>会话数据</h2>
+                <p>
+                  直接读取本机 Codex 会话日志中的 <code>token_usage_record</code>，不读取或展示聊天正文。
+                  默认监控环境变量指向的当前会话，若不存在则选择最近更新的会话。
+                </p>
+              </article>
+
+              <article class="panel about-card">
+                <span class="about-number">02</span>
+                <span class="settings-icon warm">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg>
+                </span>
+                <h2>账户余额</h2>
+                <p>
+                  本地 Node 服务读取 <code>DEEPSEEK_API_KEY</code> 或 Codex 配置中的 DeepSeek 凭证，
+                  再请求官方 <code>/user/balance</code> 接口。浏览器只会收到余额，不会收到密钥。
+                </p>
+              </article>
+
+              <article class="panel about-card">
+                <span class="about-number">03</span>
+                <span class="settings-icon teal">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg>
+                </span>
+                <h2>上下文占用</h2>
+                <p>
+                  取最近一次模型调用的输入 Token 加输出 Token，再除以当前模型上下文窗口。
+                  当前 DeepSeek 模型窗口为 1,000,000 tokens。
+                </p>
+              </article>
+
+              <article class="panel about-card">
+                <span class="about-number">04</span>
+                <span class="settings-icon green">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-bolt"></use></svg>
+                </span>
+                <h2>缓存命中率</h2>
+                <p>
+                  缓存命中率 = 累计缓存命中输入 Token ÷ 累计输入 Token。
+                  缓存节省金额按“全部输入均未命中”与“实际命中/未命中拆分”的差额计算。
+                </p>
+              </article>
+            </div>
+
+            <article class="panel privacy-card">
+              <div class="privacy-seal">
+                <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
+              </div>
+              <div>
+                <h2>本地优先，数据不离开你的电脑</h2>
+                <p>
+                  页面与服务都只监听 <code>127.0.0.1</code>。请求日志仅包含接口路径，不记录 API Key
+                  或聊天内容。若部署到其他设备，请先补充身份验证与 HTTPS 防护。
+                </p>
+              </div>
+              <div class="privacy-facts">
+                <span><i></i>仅本机访问</span>
+                <span><i></i>无第三方埋点</span>
+                <span><i></i>不保存正文</span>
+              </div>
+            </article>
+
+            <article class="panel endpoint-card">
+              <div>
+                <h2>接入你自己的应用</h2>
+                <p>
+                  面板默认读取 Codex 会话。若要把其他应用的用量接入监控，可在每次 DeepSeek 调用后保留
+                  <code>usage</code> 字段，并按相同口径累计输入、缓存命中、输出与上下文 Token。
+                </p>
+              </div>
+              <pre><code>usage: {
+  input_tokens,
+  cached_input_tokens,
+  output_tokens,
+  reasoning_output_tokens
+}</code></pre>
+            </article>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <button
+      class="widget-settings-close"
+      id="widgetSettingsClose"
+      type="button"
+      aria-label="返回监控卡片"
+      hidden
+    >
+      <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+    </button>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast-icon">
+        <svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>
+      </span>
+      <span id="toastMessage">已更新</span>
+    </div>
+
+    <script src="/app.js?v=33" defer></script>
+  </body>
+</html>
